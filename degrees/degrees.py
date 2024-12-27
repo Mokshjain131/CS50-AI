@@ -91,9 +91,30 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    path = []
+    explored = []
+    currentNode = Node(source, None, None)
+    queue = QueueFrontier()
+    queue.add(currentNode)
+    while not queue.empty():
+        if not queue.empty():
+            currentNode = queue.remove()
+            explored.append(currentNode.state)
+        if currentNode.state == target:
+            while currentNode.parent is not None:
+                path.append((currentNode.action, currentNode.state))
+                currentNode = currentNode.parent
+            path.reverse()
+            return path
+        neighbors = neighbors_for_person(currentNode.state)
+        for neighbor in neighbors:
+            if not queue.contains_state(neighbor[1]) and neighbor[1] not in explored:
+                queue.add(Node(neighbor[1], neighbor[0], currentNode))
+
+    return None
 
     # TODO
-    raise NotImplementedError
+    # raise NotImplementedError
 
 
 def person_id_for_name(name):
