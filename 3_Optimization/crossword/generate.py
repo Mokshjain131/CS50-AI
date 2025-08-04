@@ -287,32 +287,44 @@ class CrosswordCreator():
             return assignment
         var = self.select_unassigned_variable(assignment)
         for values in self.order_domain_values(var, assignment):
-            assign = assignment
+            assign = assignment.copy()
             assign[var] = values
             if self.consistent(assign):
-                assignment[var] = values
-                # inferences = self.inferences(assignment, var)
-                # if inferences != list():
-                #     for v in inferences:
-                #         assignment.append((v))
-                result = self.backtrack(assignment)
-                if result is not None:
-                    return result
-                del assignment[var]
-                # assignment -= inferences
+                inferences = self.inferences(assign, var)
+                if inferences is not None:
+                    assign.update(inferences)
+
+                    result = self.backtrack(assign)
+                    if result is not None:
+                        return result
+        return None
 
 
-    # def inferences(self, assignment, var):
-    #     arcs = {}
-    #     res = list()
-    #     neighbors = list(self.crossword.neighbors(var))
-    #     for v in neighbors:
-    #         arcs[v] = var
+    def inferences(self, assignment, var):
+        domain_copy = {
+            v: self.domains[v].copy()
+            for v in self.crossword.variables
+        }
+        original_domains = self.domains
+        self.domains = domain_copy
 
-    #     for v in self.crossword.variables:
-    #         if len(self.domains[v]) == 1:
-    #             res.append((v, self.domains[v]))
-    #     return res
+        res = {}
+        arcs = list()
+        value = assignment[var]
+        neighbors = list(self.crossword.neighbors(var))
+        for v in neighbors:
+            arcs.append((v, var))
+
+        if self.ac3(arcs) is False:
+            self.domains = original_domains
+            return None
+
+        for v in self.crossword.variables:
+            if v not in assignment and len(self.domains[v]) == 1:
+                res[v] = list(self.domains[v])[0]
+
+        self.domains = original_domains
+        return res
 
 def main():
 
