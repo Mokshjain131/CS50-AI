@@ -21,28 +21,29 @@ def main():
 
     # Get image arrays and labels for all image files
     images, labels = load_data(sys.argv[1])
+    # print(2)
 
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels)
     x_train, x_test, y_train, y_test = train_test_split(
         np.array(images), np.array(labels), test_size=TEST_SIZE
     )
-
+    # print(3)
     # Get a compiled neural network
     model = get_model()
-
+    # print(4)
     # Fit model on training data
     model.fit(x_train, y_train, epochs=EPOCHS)
-
+    # print(5)
     # Evaluate neural network performance
     model.evaluate(x_test,  y_test, verbose=2)
-
+    # print(6)
     # Save model to file
     if len(sys.argv) == 3:
         filename = sys.argv[2]
-        model.save(filename)
-        print(f"Model saved to {filename}.")
-
+        model.save(f'{filename}.keras')
+        print(f"Model saved to {filename}.keras")
+    # print(7)
 
 def load_data(data_dir):
     """
@@ -58,7 +59,18 @@ def load_data(data_dir):
     be a list of integer labels, representing the categories for each of the
     corresponding `images`.
     """
-    raise NotImplementedError
+    print(os.listdir(f'{data_dir}'))
+    images = list()
+    labels = list()
+    for dir in os.listdir(f'{data_dir}'):
+        for img in os.listdir(os.path.join(f'{data_dir}', f'{dir}')):
+            image = cv2.imread(os.path.join(f'{data_dir}', f'{dir}', f'{img}'))
+            resized_image = cv2.resize(image, (IMG_WIDTH, IMG_HEIGHT))
+            images.append(resized_image)
+            labels.append(int(dir))
+
+    # print(1)
+    return (images, labels)
 
 
 def get_model():
@@ -67,7 +79,33 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
-    raise NotImplementedError
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Conv2D(
+            32, (3, 3), activation="relu", input_shape=(30, 30, 3)
+        ),
+
+        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+
+        tf.keras.layers.Flatten(),
+
+        tf.keras.layers.Dense(128, activation="relu"),
+
+        tf.keras.layers.Dropout(0.4),
+
+        tf.keras.layers.Dense(64, activation="relu"),
+
+        tf.keras.layers.Dropout(0.4),
+
+        tf.keras.layers.Dense(43, activation="softmax")
+    ])
+
+    model.compile(
+        optimizer="adam",
+        loss="categorical_crossentropy",
+        metrics=["accuracy"]
+    )
+
+    return model
 
 
 if __name__ == "__main__":
