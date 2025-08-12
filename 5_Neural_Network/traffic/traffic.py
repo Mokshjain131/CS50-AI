@@ -80,19 +80,17 @@ def get_model():
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
     model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(
-            32, (3, 3), activation="relu", input_shape=(30, 30, 3)
-        ),
+        tf.keras.layers.Conv2D(32, (3, 3), activation="relu", input_shape=(30, 30, 3)),
+
+        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+
+        tf.keras.layers.Conv2D(32, (3, 3), activation="relu"),
 
         tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
 
         tf.keras.layers.Flatten(),
 
         tf.keras.layers.Dense(128, activation="relu"),
-
-        tf.keras.layers.Dropout(0.4),
-
-        tf.keras.layers.Dense(64, activation="relu"),
 
         tf.keras.layers.Dropout(0.4),
 
