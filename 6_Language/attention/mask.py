@@ -73,15 +73,33 @@ def visualize_attentions(tokens, attentions):
     (starting count from 1).
     """
     # print(attentions[0][0][0])
-    print(len(attentions))
-    print(len(attentions[0]))
-    for i in range(len(attentions)):
-        for j in range(len(attentions[0])):
-            generate_diagram(
-                i+1,
-                j+1,
+    # for i in range(12):
+    #     for j in range(12):
+    #         generate_diagram(
+    #             i+1,
+    #             j+1,
+    #             tokens,
+    #             attentions[i][0][j]
+    #         )
+
+    generate_diagram(
+                4,
+                12,
                 tokens,
-                attentions[i][0][j]
+                attentions[3][0][11]
+            )
+
+    generate_diagram(
+                6,
+                8,
+                tokens,
+                attentions[5][0][7]
+            )
+    generate_diagram(
+                8,
+                11,
+                tokens,
+                attentions[7][0][10]
             )
 
 
