@@ -25,12 +25,12 @@ def player(board):
     X plays first.
     any value is acceptable if terminal board is provided.
     """
-    starting_state = initial_state()
-    if board == starting_state:
-        return X
+    # starting_state = initial_state()
+    # if board == starting_state:
+    #     return X
 
-    if terminal(board):
-        return O
+    # if terminal(board):
+    #     return O
 
     moves = 0
     for i in range(3):
@@ -91,7 +91,7 @@ def winner(board):
     elif ((board[0][2] == board[1][1] == board[2][0]) or (board[0][1] == board[1][1] == board[2][1]) or (board[1][0] == board[1][1] == board[1][2])) and board[1][1] is not None:
         return board[1][1]
 
-    elif ((board[0][2] == board[1][2] == board[2][2]) or (board[2][0] == board[2][1] == board[2][2])) and board[0][0] is not None:
+    elif ((board[0][2] == board[1][2] == board[2][2]) or (board[2][0] == board[2][1] == board[2][2])) and board[2][2] is not None:
         return board[2][2]
 
     else:
@@ -159,7 +159,7 @@ def minimax(board):
                 best_val = val
                 best_action = action
 
-    return best_action
+        return best_action
 
 def recursion(board):
     if terminal(board):
